@@ -66,20 +66,21 @@
        "ele2": "lightning"
     },
     "Aether Dragon": {
-       "hp": 10,
-       "mp": 8,
-       "stamina": 12,
-       "intellect": 8,
-       "wisdom": 7,
-       "spirit": 7,
-       "agility": 10,
-       "speed": 12,
-       "strength": 12,
-       "defense": 12,
+       "hp": 98,
+       "mp": 88,
+       "stamina": 124,
+       "intellect": 80,
+       "wisdom": 72,
+       "spirit": 73,
+       "agility": 107,
+       "speed": 129,
+       "strength": 120,
+       "defense": 120,
        "total": 98,
        "body": "wyvern",
        "ele1": "air",
-       "ele2": ""
+       "ele2": "",
+       "attacks": ["SkyDive", "WindBurst"]
     },
     "Albino Dragon": {
        "hp": 7,
@@ -562,6 +563,23 @@
         "ele1": "earth",
         "ele2": "",
         "attacks": ["Claw"]
+     },
+     "Tinsel Dragon": {
+      "hp": 130,
+      "mp": 120,
+      "stamina": 120,
+      "intellect": 90,
+      "wisdom": 110,
+      "spirit": 130,
+      "agility": 90,
+      "speed": 90,
+      "strength": 110,
+      "defense": 110,
+      "total": 1100,
+      "body": "western",
+      "ele1": "earth",
+      "ele2": "",
+      "attacks": ["Claw"]
      },
      "Venturis Dragon": {
       "hp": 83,

@@ -35,6 +35,7 @@ interface Turn {
   dragon1EnergyLeft?: EnergyLeft,
   dragon2EnergyLeft?: EnergyLeft,
   isCrit?: boolean,
+  isMiss?: boolean,
   isTypeModifier?: boolean,
   isBodyModifier?: boolean,
 }
@@ -136,24 +137,40 @@ export default function BattleDragons() {
     setTurn(battlelog.length - 1);
   }
 
+  const generateWinString = (winner?: Dragon, loser?: Dragon) => {
+    return (loser?.name ?? loser?.id) + ' has been defeated! ' + (winner?.name ?? winner?.id) + ' is the winner!';
+  }
+
   const getCardText = () => {
+    const t = battlelog[turn];
     if (turn) {
       const attacker = battlelog[turn].attacker;
       const defender = battlelog[turn].defender;
       if (attacker && defender) {
-        let turnStr = attacker.name ?? attacker.id + ' uses ' + battlelog[turn].attackName + '!';
+        if (t.attackName === 'Rest') {
+          return (attacker.name ?? attacker.id) + ' is overexerted It pauses to catch its breath.'
+        }
+        let turnStr = (attacker.name ?? attacker.id) + ' uses ' + t.attackName + '!';
+        if (t.isMiss) { 
+          return turnStr += '\nBut ' +  (attacker.name ?? attacker.id) + ' missed!';
+        }
         if (battlelog[turn].isCrit) {
           turnStr += '\nA critical hit!'
         }
         turnStr += '\n' + (defender.name ?? defender.id) + ' takes ' + ((battlelog[turn].defenderDelta?.healthDelta ?? 0) * -1) + ' damage!'
 
-        if (battlelog[turn].dragon1EnergyLeft?.hpLeft === 0) {
-          turnStr += '\n' + (dragon1?.name ?? dragon1?.id) + ' has been defeated! ' + (dragon2?.name ?? dragon2?.id) + ' is the winner!'
-        } else if (battlelog[turn].dragon2EnergyLeft?.hpLeft === 0) {
-          turnStr += '\n' + (dragon2?.name ?? dragon2?.id) + ' has been defeated! ' + (dragon1?.name ?? dragon1?.id) + ' is the winner!'
+        if ((t.attackerDelta?.healthDelta ?? 0) < 0) {
+          turnStr += '\n but ' + (attacker.name ?? attacker.id) + ' took ' + (-1 * (t.attackerDelta?.healthDelta ?? 0)) + ' damage in return!'
         }
 
-
+        if (!t.dragon1EnergyLeft?.hpLeft && !t.dragon2EnergyLeft?.hpLeft) {
+          turnStr += '\n' + generateWinString(defender, attacker);
+        }
+        else if (!t.dragon1EnergyLeft?.hpLeft) {
+          turnStr += '\n' + generateWinString(dragon2, dragon1);
+        } else  if (!t.dragon2EnergyLeft?.hpLeft) {
+          turnStr += '\n' + generateWinString(dragon1, dragon2);
+        }
 
         return turnStr;
       } else {
@@ -175,8 +192,7 @@ export default function BattleDragons() {
     <TopBar/>
     <div style={{display: 'flex', flex:'flex-grow', justifyContent: 'center', minWidth: '100vw'}}>
       <div style={{flexDirection: 'column'}}>
-
-      <div style={{flexDirection: 'column',}}>
+      <div style={{flexDirection: 'column'}}>
         <div>
         {!isLoaded && <Button label={'Start Battle!'} onClick={runBattle}/>}
         {isLoaded && 

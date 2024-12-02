@@ -37,13 +37,39 @@ interface StatDelta {
 }
 
 export const handler: Handler = async (event, context) => {
+  async function updateWinLoss(d1: any, d2: any) {
+
+    let winner = d1;
+    let loser = d2;
+  
+    if (d1.hp <= 0 && d2.hp <= 0) {
+      winner = d2;
+      loser = d1;
+    } else if (d2.hp <= 0) {
+      winner = d1;
+    } else {
+      winner = d2;
+    }
+  
+    const { data_winner, error_winner } = await supabase
+    .from('dragons')
+    .update({ wins: winner.wins + 1})
+     .eq('id', winner?.id)
+    .select()
+
+    const { wadas, sfasf } = await supabase
+    .from('dragons')
+    .update({ losses: loser.losses + 1 })
+    .eq('id', loser.id)
+    .select()
+  }
+
   const { createClient } = require('@supabase/supabase-js');
   const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET);
 
   const sessionId = event?.queryStringParameters?.sessionId;
   const userId = event?.queryStringParameters?.userId;
   const opponentName = event?.queryStringParameters?.opponentName;
-
 
   let { data: access_tokens, error } = await supabase
   .from('access_tokens')
@@ -109,7 +135,7 @@ export const handler: Handler = async (event, context) => {
   const dragon1Breed = curr_dragon[0].breed;
   const dragon2Breed = opp_dragon[0].breed;
 
-  return axios(config).then(response => {
+  return axios(config).then(async response => {
     const dragon1 = response.data.dragons[id1];
     dragon1.breed = dragon1Breed;
     dragon1.stats = stats[dragon1.breed];
@@ -121,6 +147,10 @@ export const handler: Handler = async (event, context) => {
     dragon1.stamina = dragon1.stats.stamina * 10;
     dragon1.agility = dragon1.stats.agility;
     dragon1.speed = dragon1.stats.speed;
+    dragon1.spirit = dragon1.stats.spirit;
+    dragon1.wins = curr_dragon[0].wins;
+    dragon1.losses = curr_dragon[0].losses;
+
 
     const dragon2 = response.data.dragons[id2];
     dragon2.breed = dragon2Breed;
@@ -133,6 +163,9 @@ export const handler: Handler = async (event, context) => {
     dragon2.stamina = dragon2.stats.stamina * 10;
     dragon2.agility = dragon2.stats.agility;
     dragon2.speed = dragon2.stats.speed;
+    dragon2.spirit = dragon2.stats.spirit;
+    dragon2.wins = opp_dragon[0].wins;
+    dragon2.losses = opp_dragon[0].losses;
 
   
     let battleLog: string[] = [];
@@ -150,8 +183,6 @@ export const handler: Handler = async (event, context) => {
         staminaLeft: dragon2.maxStamina
       }
     })
-
-    console.warn('1')
   
     while (dragon1.hp > 0 && dragon2.hp > 0) {
       const turn1: Turn = {};
@@ -174,18 +205,25 @@ export const handler: Handler = async (event, context) => {
       if (attack1.damage) {
         const damage1 = damageCalc(order[0], order[1], attack1, battleLog, turn1);
         order[1].hp = Math.max(order[1].hp - damage1, 0);
-        battleLog.push("" + order[1].name + " has " + order[1].hp + "HP left!");
-      } else {
-        statusCalc(order[0], order[1], attack1, battleLog, turn1);
+        order[0].hp = Math.max(order[0].hp + (turn1.attackerDelta.healthDelta ?? 0), 0);
       }
+      statusCalc(order[0], order[1], attack1, battleLog, turn1);
       order[0].stamina -= attack1.stamina;
       order[0].mp -= attack1.mp;
 
-      console.warn('2', order[1])
+      turn1.dragon1EnergyLeft.hpLeft = dragon1.hp;
+      turn1.dragon1EnergyLeft.manaLeft = dragon1.mp;
+      turn1.dragon1EnergyLeft.staminaLeft = dragon1.stamina;
+      turn1.dragon2EnergyLeft.hpLeft = dragon2.hp;
+      turn1.dragon2EnergyLeft.manaLeft = dragon2.mp;
+      turn1.dragon2EnergyLeft.staminaLeft = dragon2.stamina;
 
+      battle.push(turn1);
 
       // check if done
-      if (order[1].hp <= 0) {
+      if (order[1].hp <= 0 || order[0].hp <= 0) {
+        await updateWinLoss(order[0], order[1]);
+
         return {
           statusCode: 200,
           body: JSON.stringify({
@@ -197,14 +235,6 @@ export const handler: Handler = async (event, context) => {
         }
       }
 
-      turn1.dragon1EnergyLeft.hpLeft = dragon1.hp;
-      turn1.dragon1EnergyLeft.manaLeft = dragon1.mp;
-      turn1.dragon1EnergyLeft.staminaLeft = dragon1.stamina;
-      turn1.dragon2EnergyLeft.hpLeft = dragon2.hp;
-      turn1.dragon2EnergyLeft.manaLeft = dragon2.mp;
-      turn1.dragon2EnergyLeft.staminaLeft = dragon2.stamina;
-
-      battle.push(turn1);
       const turn2: Turn = {};
       turn2.attackerDelta = {};
       turn2.defenderDelta = {};
@@ -222,10 +252,9 @@ export const handler: Handler = async (event, context) => {
       if (attack2.damage) {
         const damage2 = damageCalc(order[1], order[0], attack2, battleLog, turn2);
         order[0].hp = Math.max(order[0].hp - damage2, 0);
-        battleLog.push("" + order[0].name + " has " + order[0].hp + "HP left!");
-      } else {
-        statusCalc(order[1], order[0], attack2, battleLog, turn2);
+        order[1].hp = Math.max(order[1].hp + (turn2.attackerDelta.healthDelta ?? 0), 0);
       }
+      statusCalc(order[1], order[0], attack2, battleLog, turn2);
       order[1].stamina -= attack2.stamina;
       order[1].mp -= attack2.mp;
 
@@ -238,10 +267,10 @@ export const handler: Handler = async (event, context) => {
 
       battle.push(turn2);
 
-      console.warn('3')
-
       // check if done
-      if (order[0].hp <= 0) {
+      if (order[1].hp <= 0 || order[0].hp <= 0) {
+        await updateWinLoss(order[1], order[0]);
+
         return {
           statusCode: 200,
           body: JSON.stringify({
@@ -254,10 +283,10 @@ export const handler: Handler = async (event, context) => {
       }
   
       // restore energy
-      dragon1.mp = Math.min(dragon1.mp + 100, dragon1.maxMP);
-      dragon1.stamina = Math.min(dragon1.stamina + 100, dragon1.maxStamina);
-      dragon2.mp = Math.min(dragon2.mp + 100, dragon2.maxMP);
-      dragon2.stamina = Math.min(dragon2.stamina + 100, dragon2.maxStamina);
+      dragon1.mp = Math.min(dragon1.mp + dragon1.spirit, dragon1.maxMP);
+      dragon1.stamina = Math.min(dragon1.stamina + dragon1.spirit, dragon1.maxStamina);
+      dragon2.mp = Math.min(dragon2.mp + dragon2.spirit, dragon2.maxMP);
+      dragon2.stamina = Math.min(dragon2.stamina + dragon2.spirit, dragon2.maxStamina);
 
       const endTurn: Turn = {};
       endTurn.dragon1EnergyLeft = {
@@ -271,9 +300,6 @@ export const handler: Handler = async (event, context) => {
         staminaLeft: dragon2.stamina,
       };
       battle.push(endTurn);
-
-      console.warn('4')
-
     }
   
     return {
@@ -284,6 +310,7 @@ export const handler: Handler = async (event, context) => {
     }
 
   }).catch(error => {
+    console.warn(error)
     return {
       statusCode: 422,
       body: JSON.stringify(error),
@@ -317,47 +344,53 @@ function chooseAttack(dragon, battlelog) {
 
 function statusCalc(attacker, defender, attack, battleLog, turn) {
   if (attack.ownStatChange) {
-    switch (attack.ownStatChange) {
-      case "HP":
-        attacker.HP = Math.min(attacker.maxHP, attacker.HP + attack.ownStatChange.HP);
-        battleLog.push("" + attacker.name + " restores " + attack.ownStatChange.HP + " HP!");
-        turn.attackerDelta.healthDelta = attack.ownStatChange.HP;
-      case "MP":
-        attacker.MP = Math.min(attacker.maxMP, attacker.MP + attack.ownStatChange.MP);
-        battleLog.push("" + attacker.name + " restores " + attack.ownStatChange.MP + " MP!");
-        turn.attackerDelta.manaDelta = attack.ownStatChange.MP;
-      case "stamina":
-        attacker.stamina = Math.min(attacker.stamina, attacker.stamina + attack.ownStatChange.Stamina);
-        battleLog.push("" + attacker.name + " restores " + attack.ownStatChange.stamina + " stamina!");
-        turn.attackerDelta.staminaDelta = attack.ownStatChange.stamina;
-      case "intellect":
-        attacker.intellect *= attack.ownStatChange.intellect;
-        battleLog.push("" + attacker.name + "'s Intellect has increased!");
-        turn.attackerDelta.intellectDelta = attack.ownStatChange.intellect;
-      case "wisdom":
-        attacker.wisdom *= attack.ownStatChange.wisdom;
-        battleLog.push("" + attacker.name + "'s Wisdom has increased!");
-        turn.attackerDelta.wisdomDelta = attack.ownStatChange.wisdom;
-      case "spirit":
-        attacker.spirit *= attack.ownStatChange.spirit;
-        battleLog.push("" + attacker.name + "'s Spirit has increased!");
-        turn.attackerDelta.spiritDelta = attack.ownStatChange.spirit;
-      case "agility":
-        attacker.agility *= attack.ownStatChange.agility;
-        battleLog.push("" + attacker.name + "'s Agility has increased!");
-        turn.attackerDelta.agilityDelta = attack.ownStatChange.agility;
-      case "speed":
-        attacker.speed *= attack.ownStatChange.speed;
-        battleLog.push("" + attacker.name + "'s Speed has increased!");
-        turn.attackerDelta.speedDelta = attack.ownStatChange.speed;
-      case "strength":
-        attacker.strength *= attack.ownStatChange.strength;
-        battleLog.push("" + attacker.name + "'s Strength has increased!");
-        turn.attackerDelta.strengthDelta = attack.ownStatChange.strength;
-      case "defense":
-        attacker.defense *= attack.ownStatChange.defense;
-        battleLog.push("" + attacker.name + "'s Defense has increased!");
-        turn.attackerDelta.defenseDelta = attack.ownStatChange.defense;
+    if ('hp' in attack.ownStatChange) {
+      if (attack.ownStatChange.hp < 0) {
+        attacker.hp = Math.max(0, attacker.hp + attack.ownStatChange.hp);
+      } else {
+        attacker.hp = Math.min(attacker.maxHP, attacker.hp + attack.ownStatChange.hp);
+      }
+      turn.attackerDelta.healthDelta = attack.ownStatChange.hp;
+    }
+    if ('mp' in attack.ownStatChange) {
+      if (attack.ownStatChange.mp < 0) {
+        attacker.mp = Math.max(0, attacker.mp + attack.ownStatChange.mp);
+      } else {
+        attacker.mp = Math.min(attacker.maxMP, attacker.mp + attack.ownStatChange.mp);
+      }
+      turn.attackerDelta.healthDelta = attack.ownStatChange.mp;
+    }
+    if ('stamina' in attack.ownStatChange) {
+      attacker.stamina = Math.min(attacker.stamina, attacker.stamina + attack.ownStatChange.stamina);
+      turn.attackerDelta.staminaDelta = attack.ownStatChange.stamina;
+    }
+    if ('intellect' in attack.ownStatChange) {
+      attacker.intellect *= attack.ownStatChange.intellect;
+      turn.attackerDelta.intellectDelta = attack.ownStatChange.intellect;
+    }
+    if ('wisdom' in attack.ownStatChange) {
+      attacker.wisdom *= attack.ownStatChange.wisdom;
+      turn.attackerDelta.wisdomDelta = attack.ownStatChange.wisdom;
+    }
+    if ('spirit' in attack.ownStatChange) {
+      attacker.spirit *= attack.ownStatChange.spirit;
+      turn.attackerDelta.spiritDelta = attack.ownStatChange.spirit;
+    }
+    if ('agility' in attack.ownStatChange) {
+      attacker.agility *= attack.ownStatChange.agility;
+      turn.attackerDelta.agilityDelta = attack.ownStatChange.agility;
+    }
+    if ('speed' in attack.ownStatChange) {
+      attacker.speed *= attack.ownStatChange.speed;
+      turn.attackerDelta.speedDelta = attack.ownStatChange.speed;
+    }
+    if ('strength' in attack.ownStatChange) {
+      attacker.strength *= attack.ownStatChange.strength;
+      turn.attackerDelta.strengthDelta = attack.ownStatChange.strength;
+    }
+    if ('defense' in attack.ownStatChange) {
+      attacker.defense *= attack.ownStatChange.defense;
+      turn.attackerDelta.defenseDelta = attack.ownStatChange.defense;
     }
   }
 }
@@ -366,9 +399,21 @@ function damageCalc(attacker, defender, attack, battleLog, turn) {
   const STAB = (attacker.ele2 === attack.type || attacker.ele2 === attack.type);
   let critChance = 0;
   let isCrit = false;
+  let missChance = 0;
+  let isMiss = false;
   let outgoingDamage = 0;
   let incomingDamage = 0;
   let randomRoll = 1 + (Math.random() * .25);
+
+  if (attack.source !== 'Self') {
+    missChance = Math.floor(Math.random() * 1000)
+    if (missChance < (defender.stats.speed * 100)/attacker.stats.speed) {
+      turn.isMiss = true;
+      turn.defenderDelta.healthDelta = 0;
+      return 0;
+    }
+    isMiss = true;
+  }
 
   if (attack.source === "Physical") {
     critChance = Math.floor(Math.random() * 1000);
@@ -396,10 +441,12 @@ function damageCalc(attacker, defender, attack, battleLog, turn) {
 
   if (isCrit) {
     turn.isCrit = true;
-    battleLog.push("A critical hit!");
   }
 
-  battleLog.push("" + defender.name + " takes " + incomingDamage + "damage!");
+  if (attack.selfDamage) {
+    turn.attackerDelta.healthDelta = Math.ceil(incomingDamage * -.1);
+  }
+
   turn.defenderDelta.healthDelta = incomingDamage * -1;
   return incomingDamage;
 }

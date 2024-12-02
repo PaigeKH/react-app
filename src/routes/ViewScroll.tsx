@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
@@ -9,12 +9,14 @@ import DragonCard from '../DragonCard';
 import { useAuth0 } from '@auth0/auth0-react';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import TopBar from '../TopBar';
+import { Toast } from 'primereact/toast';
 
 const pages: string[] = [''];
 let currentPage = 1;
 let hasNextPage: boolean;
 
 export default function ViewScroll() {
+  const toast = useRef<Toast>(null);
   const [dataIsLoaded, setDataIsLoaded] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>('');
   const [selectedDragon, setSelectedDragon] = useState<Dragon>();
@@ -65,10 +67,13 @@ export default function ViewScroll() {
         username: user?.name,
         cursor: pages[currentPage - 1],
         dragonID: selectedDragon?.id,
+        dragonName: selectedDragon?.name,
         userID: user?.sub?.split("|")[2],
       }
     }).then((response) => {
-    
+      showToast(false, 'Submitted ' + (response.data.name ?? response.data.message[0].id) + ' successfully.');
+    }).catch((error) => {
+      showToast(true, 'Error submitting dragon' + error)
     })
   };
 
@@ -77,6 +82,14 @@ export default function ViewScroll() {
   useEffect(() => {
     getDragons(null);
   }, [])
+
+  const showToast = (isError: boolean, message: string) => {
+    toast.current?.show({ 
+      severity: isError ? 'error' : 'success',
+      summary: isError ? 'Error' : 'Success',
+      detail: message,
+     });
+};
 
 
   const updateText = (event: React.FormEvent<HTMLInputElement>) => {
@@ -91,6 +104,7 @@ export default function ViewScroll() {
   if (!dataIsLoaded) {
     return (
       <div>
+        <TopBar/>
         <ProgressSpinner/>
         Loading dragons...
       </div>
@@ -100,13 +114,14 @@ export default function ViewScroll() {
   return (
     <div style={{maxHeight: '80vh', marginTop: '5vh'}}>
       <TopBar/>
+      <Toast ref={toast} />
       <header className='buttonContainers'>
       <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
 
         <div>
         <label>Filter</label>
         {/* <Button></Button> */}
-        <InputText keyfilter="alphanum" onInput={updateText}/>
+        <InputText onInput={updateText}/>
         </div>
         <ScrollPanel style={{height: '70vh', width:'40vw'}}>
           

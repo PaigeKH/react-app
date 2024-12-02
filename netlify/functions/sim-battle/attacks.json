@@ -6,15 +6,27 @@
         "source": "Physical",
         "mp": 30,
         "stamina": 70,
+        "accuracy": 100,
         "description": "The user cloaks themself in shadows and pounces on the opponent."
     },
     "Claw": {
         "name": "Claw",
-        "damage": 50,
+        "damage": 40,
         "type": "Neutral",
         "source": "Physical",
         "mp": 0,
-        "stamina": 50,
+        "stamina": 100,
+        "accuracy": 90,
+        "description": "A basic claw attack."
+    },
+    "GildedClaw": {
+        "name": "Gilded Claw",
+        "damage": 80,
+        "type": "Neutral",
+        "source": "Physical",
+        "mp": 0,
+        "stamina": 100,
+        "accuracy": 90,
         "description": "A basic claw attack."
     },
     "GreaterBlink": {
@@ -24,15 +36,27 @@
         "source": "Physical",
         "mp": 0,
         "stamina": 50,
+        "accuracy": 100,
         "description": "The user slams into the opponent after a blink."
+    },
+    "MalachiteFlame": {
+        "name": "Malachite Flame",
+        "damage": 150,
+        "type": "Neutral",
+        "source": "Magical",
+        "mp": 200,
+        "stamina": 0,
+        "accuracy": 90,
+        "description": "A basic breath attack."
     },
     "Nightfall": {
         "name": "Nightfall",
         "damage": 200,
         "type": "Dark",
         "source": "Magical",
-        "mp": 100,
-        "stamina": 300,
+        "mp": 200,
+        "stamina": 80,
+        "accuracy": 100,
         "description": "A very strong magical spell that causes a terrible mist to fall upon the arena."
     },
     "Rest": {
@@ -42,6 +66,7 @@
         "source": "None",
         "mp": 0,
         "stamina": 0,
+        "accuracy": 100,
         "ownStatChange": {
             "mp": 100,
             "stamina": 100
@@ -55,7 +80,30 @@
         "source": "Magical",
         "mp": 100,
         "stamina": 0,
+        "accuracy": 90,
         "description": "A breath attack full of malicious power."
+    },
+    "SilverFang": {
+        "name": "Silver Fang",
+        "damage": 60,
+        "type": "Neutral",
+        "source": "Physical",
+        "mp": 80,
+        "stamina": 0,
+        "accuracy": 100,
+        "description": "A basic bite attack."
+    },
+    "SkyDive": {
+        "name": "Sky Dive",
+        "damage": 100,
+        "type": "Air",
+        "source": "Physical",
+        "mp": 0,
+        "stamina": 80,
+        "selfDamage": true,
+        "accuracy": 80,
+        "description": "A full-body slam from the sky, slightly injuring the user."
+        
     },
     "TimeFlash": {
         "name": "Time Flash",
@@ -64,6 +112,7 @@
         "source": "Magical",
         "mp": 100,
         "stamina": 0,
+        "accuracy": 100,
         "description": "A spell that ages the opponent."
     },
     "TimeWarp": {
@@ -73,6 +122,7 @@
         "source": "Magical",
         "mp": 100,
         "stamina": 0,
+        "accuracy": 100,
         "ownStatChange": {
             "agility": 1,
             "speed": 1
@@ -86,6 +136,17 @@
         "source": "Magical",
         "mp": 60,
         "stamina": 0,
+        "accuracy": 80,
         "description": "The user fires off a burst of life energy."
-    } 
+    },
+    "WindBurst": {
+        "name": "Wind Burst",
+        "damage": 110,
+        "type": "Air",
+        "source": "Magical",
+        "mp": 80,
+        "stamina": 80,
+        "accuracy": 90,
+        "description": "A burst of air, from both physical and magical sources."
+    }
 }
