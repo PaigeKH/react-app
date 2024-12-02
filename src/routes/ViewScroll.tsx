@@ -67,7 +67,6 @@ export default function ViewScroll() {
         username: user?.name,
         cursor: pages[currentPage - 1],
         dragonID: selectedDragon?.id,
-        dragonName: selectedDragon?.name,
         userID: user?.sub?.split("|")[2],
       }
     }).then((response) => {

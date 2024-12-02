@@ -8,7 +8,6 @@ export const handler: Handler = async (event, context) => {
   const dragonID = event.queryStringParameters?.dragonID;
   const cursor = event.queryStringParameters?.cursor;
   const username = event.queryStringParameters?.username;
-  const dragonName = event.queryStringParameters?.dragonName;
 
   const url = cursor !== '' ? 'https://dragcave.net/api/v2/user?username=' + username + '&filter=ADULTS_AND_FROZEN&after=' + cursor : 'https://dragcave.net/api/v2/user?username=' + username + '&filter=ADULTS_AND_FROZEN&limit=100000';
 
@@ -55,7 +54,6 @@ export const handler: Handler = async (event, context) => {
           statusCode: 200,
           body: JSON.stringify({
             message: data,
-            name: dragonName,
             id: dragonID,
           }),
         }
