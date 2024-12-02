@@ -1,0 +1,91 @@
+{
+    "Ambush": {
+        "name": "Ambush",
+        "damage": 100,
+        "type": "Dark",
+        "source": "Physical",
+        "mp": 30,
+        "stamina": 70,
+        "description": "The user cloaks themself in shadows and pounces on the opponent."
+    },
+    "Claw": {
+        "name": "Claw",
+        "damage": 50,
+        "type": "Neutral",
+        "source": "Physical",
+        "mp": 0,
+        "stamina": 50,
+        "description": "A basic claw attack."
+    },
+    "GreaterBlink": {
+        "name": "Greater Blink",
+        "damage": 70,
+        "type": "Neutral",
+        "source": "Physical",
+        "mp": 0,
+        "stamina": 50,
+        "description": "The user slams into the opponent after a blink."
+    },
+    "Nightfall": {
+        "name": "Nightfall",
+        "damage": 200,
+        "type": "Dark",
+        "source": "Magical",
+        "mp": 100,
+        "stamina": 300,
+        "description": "A very strong magical spell that causes a terrible mist to fall upon the arena."
+    },
+    "Rest": {
+        "name": "Rest",
+        "damage": 0,
+        "type": "Neutral",
+        "source": "None",
+        "mp": 0,
+        "stamina": 0,
+        "ownStatChange": {
+            "mp": 100,
+            "stamina": 100
+        },
+        "description": "The user rests to regain energy."
+    },
+    "ShadowBreath": {
+        "name": "Shadow Breath",
+        "damage": 100,
+        "type": "Dark",
+        "source": "Magical",
+        "mp": 100,
+        "stamina": 0,
+        "description": "A breath attack full of malicious power."
+    },
+    "TimeFlash": {
+        "name": "Time Flash",
+        "damage": 100,
+        "type": "Time",
+        "source": "Magical",
+        "mp": 100,
+        "stamina": 0,
+        "description": "A spell that ages the opponent."
+    },
+    "TimeWarp": {
+        "name": "Time Warp",
+        "damage": 0,
+        "type": "Time",
+        "source": "Magical",
+        "mp": 100,
+        "stamina": 0,
+        "ownStatChange": {
+            "agility": 1,
+            "speed": 1
+        },
+        "description": "The user speeds up, increasing agility and speed."
+    },
+    "TranquilBurst": {
+        "name": "Tranquil Burst",
+        "damage": 80,
+        "type": "Life",
+        "source": "Magical",
+        "mp": 60,
+        "stamina": 0,
+        "description": "The user fires off a burst of life energy."
+    } 
+}

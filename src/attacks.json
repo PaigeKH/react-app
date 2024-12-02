@@ -1,0 +1,84 @@
+{
+    "Ambush": {
+        "name": "Ambush",
+        "damage": 10,
+        "type": "Dark",
+        "source": "Physical",
+        "mp": 3,
+        "stamina": 7,
+        "description": "The user cloaks themself in shadows and pounces on the opponent."
+    },
+    "Claw": {
+        "name": "Claw",
+        "damage": 5,
+        "type": "Neutral",
+        "source": "Physical",
+        "mp": 0,
+        "stamina": 5,
+        "description": "A basic claw attack."
+    },
+    "GreaterBlink": {
+        "name": "Greater Blink",
+        "damage": 7,
+        "type": "Neutral",
+        "source": "Physical",
+        "mp": 0,
+        "stamina": 5,
+        "description": "The user slams into the opponent after a blink."
+    },
+    "Nightfall": {
+        "name": "Nightfall",
+        "damage": 20,
+        "type": "Dark",
+        "source": "Magical",
+        "mp": 10,
+        "stamina": 30,
+        "description": "A very strong magical spell that causes a terrible mist to fall upon the arena."
+    },
+    "Rest": {
+        "name": "Rest",
+        "damage": 0,
+        "type": "Neutral",
+        "source": "None",
+        "mp": 0,
+        "stamina": 0,
+        "ownStatChange": {
+            "mp": 10,
+            "stamina": 10
+        },
+        "description": "The user rests to regain energy."
+    },
+    "ShadowBreath": {
+        "name": "Shadow Breath",
+        "damage": 10,
+        "type": "Dark",
+        "source": "Magical",
+        "mp": 10,
+        "stamina": 0,
+        "description": "A breath attack full of malicious power."
+    },
+    "TimeFlash": {
+        "name": "Time Flash",
+        "damage": 10,
+        "type": "Time",
+        "source": "Magical",
+        "mp": 10,
+        "stamina": 0,
+        "description": "A spell that ages the opponent."
+    },
+    "TimeWarp": {
+        "name": "Time Warp",
+        "damage": 0,
+        "type": "Time",
+        "source": "Magical",
+        "mp": 10,
+        "stamina": 0,
+        "ownStatChange": {
+            "agility": 1,
+            "speed": 1
+        },
+        "description": "The user speeds up, increasing agility and speed."
+    }
+
+    
+}

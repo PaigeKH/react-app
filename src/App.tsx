@@ -1,49 +1,47 @@
 import React from 'react';
 import './App.css';
-import { Menubar } from 'primereact/menubar';
 import { PrimeReactProvider } from 'primereact/api';
 import "primereact/resources/themes/lara-light-cyan/theme.css";
-import { MenuItem, MenuItemCommandEvent } from 'primereact/menuitem';
-import Home from './Home';
-import NavBar from './APITest';
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+import Home from './routes/Home';
+import ErrorPage from './routes/ErrorPage';
+import BattleDragons from './routes/BattleDragons';
+import ViewScroll from './routes/ViewScroll';
+import ChooseBattle from './routes/ChooseBattle';
 
-class App extends React.Component<{}, {tab: number}> {
-  constructor(props: {}) {
-    super(props);
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home/>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/battle/:opponentName',
+    element: <BattleDragons/>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/battle',
+    element: <ChooseBattle/>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/scroll',
+    element: <ViewScroll/>,
+    errorElement: <ErrorPage />,
+  },
+]);
 
-    this.state = {
-      tab: 0,
-    }
-}
-
-  switchTab = (event: MenuItemCommandEvent) => {
-    switch (event.item.label) {
-      case 'Not Home':
-        this.setState({
-          tab: 1
-        })
-        break;
-      case 'idk':
-        this.setState({
-          tab: 2
-        })
-        break;
-      default:
-        this.setState({
-          tab: 0
-        })
-        break;
-    }
-  }
-
+class App extends React.Component<{}, {}> {
   render() {
     return (
       <PrimeReactProvider>
-      <div className="App">
-      <Menubar model={[{label: 'Home', command: this.switchTab}, {label: 'Not Home', command:this.switchTab}, {label: 'idk'}]}/>
+        <div className="App-header">
+      <RouterProvider router={router} />
       </div>
-      <Home shouldDisplay={this.state.tab === 0}/>
-      <NavBar shouldDisplay={this.state.tab === 1}/>
       </PrimeReactProvider>
     );
   }
