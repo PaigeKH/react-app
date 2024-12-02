@@ -13,6 +13,7 @@ root.render(
     <Auth0Provider
       domain={process.env.REACT_APP_ENV === 'DEV' ? 'dev-chzmnpn7nce0kql2.us.auth0.com' : 'shrimp-jam.us.auth0.com'}
       clientId={process.env.REACT_APP_ENV === 'DEV' ? 'B3tUQtY82uU0skTLd7VAPyLaKV57bH78' : 'PJZRluG8BA41SdAcMapnUqlHkc1kSERp'}
+      cacheLocation="localstorage"
       authorizationParams={{
         redirect_uri: process.env.REACT_APP_ENV === 'DEV' ? 'http://localhost:8888/' : 'https://shrimp-jam.com/',
       }}>
