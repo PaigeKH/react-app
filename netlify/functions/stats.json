@@ -579,7 +579,7 @@
       "body": "western",
       "ele1": "earth",
       "ele2": "",
-      "attacks": ["Claw"]
+      "attacks": ["GildedClaw", "SilverFang", "MalachiteFlame"]
      },
      "Venturis Dragon": {
       "hp": 83,

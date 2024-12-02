@@ -88,8 +88,8 @@
         "damage": 60,
         "type": "Neutral",
         "source": "Physical",
-        "mp": 80,
-        "stamina": 0,
+        "mp": 0,
+        "stamina": 80,
         "accuracy": 100,
         "description": "A basic bite attack."
     },

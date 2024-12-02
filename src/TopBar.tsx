@@ -24,6 +24,7 @@ return (
         {label: 'Home', command:onPress, id:''},
         {label: 'Battle', command:onPress, id:'battle'},
         {label: 'Scroll', command:onPress, id:'scroll'},
+        //{label: 'Test', command:onPress, id:'test'},
         {label: 'Logout', command:onPressLogout, id:'logout'}
     ]}
     end={

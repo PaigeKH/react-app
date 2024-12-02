@@ -11,6 +11,7 @@ import ErrorPage from './routes/ErrorPage';
 import BattleDragons from './routes/BattleDragons';
 import ViewScroll from './routes/ViewScroll';
 import ChooseBattle from './routes/ChooseBattle';
+import Test from './routes/Test';
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,11 @@ const router = createBrowserRouter([
   {
     path: '/scroll',
     element: <ViewScroll/>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/test',
+    element: <Test/>,
     errorElement: <ErrorPage />,
   },
 ]);
