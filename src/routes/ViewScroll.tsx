@@ -4,12 +4,13 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import './SubmitDragon.css';
 import { Dragon } from './Dragon';
-import { ScrollPanel } from 'primereact/scrollpanel';
 import DragonCard from '../DragonCard';
 import { useAuth0 } from '@auth0/auth0-react';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import TopBar from '../TopBar';
 import { Toast } from 'primereact/toast';
+import { FloatLabel } from 'primereact/floatlabel';
+import { VirtualScroller } from 'primereact/virtualscroller';
 
 const pages: string[] = [''];
 let currentPage = 1;
@@ -17,10 +18,12 @@ let hasNextPage: boolean;
 
 export default function ViewScroll() {
   const toast = useRef<Toast>(null);
+  const scroller = useRef<VirtualScroller>(null);
+
   const [dataIsLoaded, setDataIsLoaded] = useState<boolean>(false);
-  const [filter, setFilter] = useState<string>('');
   const [selectedDragon, setSelectedDragon] = useState<Dragon>();
   const [dragons, setDragons] = useState<Dragon[]>([]);
+  const [filteredDragons, setFilteredDragons] = useState<Dragon[]>([]);
 
   const { user } = useAuth0();
 
@@ -35,6 +38,7 @@ export default function ViewScroll() {
     }).then((response) => {
         //@ts-ignore
         setDragons(Object.values(response.data.dragons));
+        setFilteredDragons(dragons);
         setDataIsLoaded(true);
 
         if (!pages.includes(response.data.data.endCursor)) {
@@ -76,8 +80,6 @@ export default function ViewScroll() {
     })
   };
 
-
-
   useEffect(() => {
     getDragons(null);
   }, [])
@@ -90,15 +92,40 @@ export default function ViewScroll() {
      });
 };
 
+const updateFilter = (event: React.FormEvent<HTMLInputElement>) => {
+  if (!dragons) {
+    return;
+  }
 
-  const updateText = (event: React.FormEvent<HTMLInputElement>) => {
-    setFilter(event.currentTarget.value);
-  };
+  const filtered = dragons.filter((dragon) => {
+    const id = dragon.id.toLowerCase();
+    const breed = dragon?.breed?.toLowerCase() ?? '';
+    const name = dragon.name?.toLowerCase() ?? '';
 
-  //@ts-ignore
+    if (event.currentTarget.value !== '' &&
+      id.includes(event.currentTarget.value.toLowerCase()) || 
+      breed?.includes(event.currentTarget.value.toLowerCase()) ||
+      name?.includes(event.currentTarget.value.toLowerCase())) {
+        return dragon;
+      }
+    else {
+      return false;
+    }
+  })
+
+  setFilteredDragons(filtered);
+  scroller.current?.scrollToIndex(0);
+};
+
   const selectDragon = (dragon: Dragon): void => {
     setSelectedDragon(dragon);
   };
+
+  const displayDragon = (item: Dragon) => {
+    return (
+      <DragonCard dragon={item} onClick={selectDragon}/>
+    );
+   }
 
   if (!dataIsLoaded) {
     return (
@@ -110,6 +137,8 @@ export default function ViewScroll() {
     )
   }
 
+  console.warn(filteredDragons);
+
   return (
     <div style={{maxHeight: '80vh', marginTop: '5vh'}}>
       <TopBar/>
@@ -117,28 +146,12 @@ export default function ViewScroll() {
       <header className='buttonContainers'>
       <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
 
-        <div>
+      <FloatLabel>
+        <InputText onInput={updateFilter}/>
         <label>Filter</label>
-        {/* <Button></Button> */}
-        <InputText onInput={updateText}/>
-        </div>
-        <ScrollPanel style={{height: '70vh', width:'40vw'}}>
-          
-          {dragons.map((dragon) => {
-            const id = dragon.id.toLowerCase();
-            const breed = dragon?.breed?.toLowerCase() ?? '';
-            const name = dragon.name?.toLowerCase() ?? '';
+      </FloatLabel>
+      <VirtualScroller ref={scroller} items={filteredDragons} itemTemplate={displayDragon} itemSize={200} style={{width: '20vw', height: '60vh'}}/>
 
-             if (filter !== '' &&
-              id.includes(filter.toLowerCase()) || 
-              breed?.includes(filter.toLowerCase()) ||
-              name?.includes(filter.toLowerCase())) {
-                //@ts-ignore
-                return <DragonCard dragon={dragon} onClick={selectDragon}></DragonCard>
-              }
-
-        })}
-        </ScrollPanel>
         <div style={{justifyContent: 'center'}}>
         {/* <Button onClick={goBack} label='◀ Previous'></Button>
         <Button onClick={goForward} label='Next ▶'></Button> */}

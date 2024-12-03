@@ -2,61 +2,84 @@ import './App.css';
 import { useAuth0 } from '@auth0/auth0-react';
 import TopBar from '../TopBar';
 import axios from 'axios';
-import { VirtualScroller } from 'primereact/virtualscroller';
 import { Dragon } from './Dragon';
 import { useEffect, useState } from 'react';
-import BasicDemo from './Test2';
-import DragonCard from '../DragonCard';
+import { OrderList, OrderListChangeEvent } from 'primereact/orderlist';
+
 
 export default function Test() {
-  // const toast = useRef<Toast>(null);
-  const [dataIsLoaded, setDataIsLoaded] = useState<boolean>(false);
-  const [filter, setFilter] = useState<string>('');
-  const [selectedDragon, setSelectedDragon] = useState<Dragon>();
   const [dragons, setDragons] = useState<Dragon[]>([]);
 
   const { user } = useAuth0();
 
-  useEffect(() => {
-    getDragons(null);
-  }, [])
 
-  const getDragons = (cursor: string | null) => {
-    axios.get('/.netlify/functions/hello-world', {    
+  const getDragons = () => {
+    axios.get('/.netlify/functions/get-registered-dragons', {
       params: {
-        nickname: user?.nickname,
-        name: user?.name,
-        cursor: cursor,
+        sessionID: user?.nickname,
         userID: user?.sub?.split("|")[2],
       }
     }).then((response) => {
-        //@ts-ignore
-        setDragons(Object.values(response.data.dragons));
-        setDataIsLoaded(true);
+      console.warn(response);
+      setDragons(response.data.dragonFiltered);
+    }).catch((error) => {
+      console.warn(error);
+    });
+  }
 
-      }).catch((error) => {
-        console.warn('Error:', error)
-      });
-     }
+  useEffect(() => {
+    getDragons();
+  }, [])
 
-     const displayDragon = (item: Dragon) => {
+  const onOrderChange = (event: OrderListChangeEvent) => {
+    setDragons(event.value);
+
+    axios.get('/.netlify/functions/set-active-dragons', {
+      params: {
+        sessionID: user?.nickname,
+        userID: user?.sub?.split("|")[2],
+        dragon: event.value[0].id,
+      }
+    }).then((response) => {}).catch((error) => {
+      console.warn(error);
+      getDragons();
+    });
+  }
+
+  const itemTemplate = (dragon:Dragon) => {
+    if (dragons[0] === dragon) {
       return (
-        <DragonCard dragon={item} onClick={() => {}}/>
-      // <div>
-      //   {item.id}
-      // </div>
-      );
-     }
+        <div style={{width: '40vw', backgroundColor: 'var(--primary-color)', borderRadius: '5px', display: 'inline-flex', justifyContent: 'space-between', paddingRight: '5vw'}}>
+            <img src={'https://dragcave.net/image/'+ dragon.id +'.gif'}/>
+            <div style={{alignContent: 'center', color: 'var(--primary-color-text)'}}>
+              <div>{dragon.name}</div>
+              <div className="font-bold">{dragon.id}</div>
+              <div className="font-bold">{dragon.breed}</div>
+              <div className="font-bold"><b>{'Active Dragon'}</b></div>
+            </div>
+        </div>
+    );
+    }
 
+
+    return (
+      <div style={{width: '40vw', display: 'inline-flex', justifyContent: 'space-between', paddingRight: '5vw'}}>
+      <img src={'https://dragcave.net/image/'+ dragon.id +'.gif'}/>
+      <div style={{alignContent: 'center'}}>
+        <div>{dragon.name}</div>
+        <div>{dragon.id}</div>
+        <div>{dragon.breed}</div>
+      </div>
+  </div>
+    );
+};
+  
     return (
       <div>
         <TopBar/>
         <header>
-            <VirtualScroller items={dragons} itemTemplate={displayDragon} itemSize={50} style={{width: '20vw', height: '20vh'}}>
-
-            </VirtualScroller>
-
-        </header>
+          <OrderList dataKey="id" value={dragons} onChange={onOrderChange} itemTemplate={itemTemplate} 
+            header="Registered Dragons" dragdrop></OrderList>        </header>
       </div>
     );
 };

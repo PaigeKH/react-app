@@ -9,6 +9,16 @@
         "accuracy": 100,
         "description": "The user cloaks themself in shadows and pounces on the opponent."
     },
+    "VenomousBite": {
+        "name": "Venomous Bite",
+        "damage": 80,
+        "type": "Death",
+        "source": "Physical",
+        "mp": 0,
+        "stamina": 100,
+        "accuracy": 100,
+        "description": "A bite with venomous fangs."
+    },
     "Claw": {
         "name": "Claw",
         "damage": 40,
@@ -18,6 +28,16 @@
         "stamina": 100,
         "accuracy": 90,
         "description": "A basic claw attack."
+    },
+    "FlameBlast": {
+        "name": "Flame Blast",
+        "damage": 75,
+        "type": "Fire",
+        "source": "Physical",
+        "mp": 100,
+        "stamina": 0,
+        "accuracy": 90,
+        "description": "A moderate burst of flame."
     },
     "GildedClaw": {
         "name": "Gilded Claw",
@@ -39,9 +59,19 @@
         "accuracy": 100,
         "description": "The user slams into the opponent after a blink."
     },
+    "HeliumFlash": {
+        "name": "Helium Flash",
+        "damage": 60,
+        "type": "Light",
+        "source": "Magical",
+        "mp": 70,
+        "stamina": 0,
+        "accuracy": 100,
+        "description": "The user attacks with a flash of primordial energy."
+    },
     "MalachiteFlame": {
         "name": "Malachite Flame",
-        "damage": 150,
+        "damage": 130,
         "type": "Neutral",
         "source": "Magical",
         "mp": 200,
@@ -58,6 +88,27 @@
         "stamina": 80,
         "accuracy": 100,
         "description": "A very strong magical spell that causes a terrible mist to fall upon the arena."
+    },
+    "NoxiousCharge": {
+        "name": "Noxious Chare",
+        "damage": 150,
+        "type": "Neutral",
+        "source": "Physical",
+        "mp": 0,
+        "stamina": 150,
+        "accuracy": 100,
+        "selfDamage": true,
+        "description": "The user coats themselves in fumes and uses a full-bodied charge."
+    },
+    "RainbowFlash": {
+        "name": "Rainbow Flash",
+        "damage": 125,
+        "type": "Light",
+        "source": "Magical",
+        "mp": 145,
+        "stamina": 0,
+        "accuracy": 80,
+        "description": "The user's scales unleash a burst of rainbow light."
     },
     "Rest": {
         "name": "Rest",
@@ -105,6 +156,56 @@
         "description": "A full-body slam from the sky, slightly injuring the user."
         
     },
+    "SongOfTheDead": {
+        "name": "Song of the Dead",
+        "damage": 100,
+        "type": "Death",
+        "source": "Magical",
+        "mp": 80,
+        "stamina": 0,
+        "accuracy": 80,
+        "description": "An erie, unsettling, and painful song."
+    },
+    "SparkingClaw": {
+        "name": "Sparking Claw",
+        "damage": 100,
+        "type": "Electric",
+        "source": "Physical",
+        "mp": 10,
+        "stamina": 120,
+        "accuracy": 90,
+        "description": "An attack using claws laced with electricity."
+    },
+    "SpiritFire": {
+        "name": "Spirit Fire",
+        "damage": 65,
+        "type": "Electric",
+        "source": "Magical",
+        "mp": 80,
+        "stamina": 0,
+        "accuracy": 90,
+        "description": "The user spits magical fire at the opponent."
+    },
+    "Thunderstorm": {
+        "name": "Thunderstorm",
+        "damage": 300,
+        "type": "Electric",
+        "source": "Magical",
+        "mp": 300,
+        "stamina": 0,
+        "accuracy": 100,
+        "description": "The user summons a strong thunderstorm."
+    },
+    "TailThwack": {
+        "name": "Tail Thwack",
+        "damage": 85,
+        "type": "Neutral",
+        "source": "Physical",
+        "mp": 0,
+        "stamina": 60,
+        "accuracy": 90,
+        "description": "A basic tail attack."
+    },
     "TimeFlash": {
         "name": "Time Flash",
         "damage": 100,
@@ -138,6 +239,16 @@
         "stamina": 0,
         "accuracy": 80,
         "description": "The user fires off a burst of life energy."
+    },
+    "VoidTear": {
+        "name": "Void Tear",
+        "damage": 170,
+        "type": "Air",
+        "source": "Magical",
+        "mp": 120,
+        "stamina": 120,
+        "accuracy": 90,
+        "description": "A high-damage, high-energy attack where the user tears the fabric of spacetime."
     },
     "WindBurst": {
         "name": "Wind Burst",

@@ -35,7 +35,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: '/test',
+    path: '/party',
     element: <Test/>,
     errorElement: <ErrorPage />,
   },
@@ -44,7 +44,7 @@ const router = createBrowserRouter([
 class App extends React.Component<{}, {}> {
   render() {
     return (
-      <PrimeReactProvider>
+      <PrimeReactProvider value={{ripple: true}}>
         <div className="App-header">
       <RouterProvider router={router} />
       </div>
