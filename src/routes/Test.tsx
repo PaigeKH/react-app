@@ -3,7 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import TopBar from '../TopBar';
 import axios from 'axios';
 import { Dragon } from './Dragon';
-import { useEffect, useState } from 'react';
+import { SyntheticEvent, useEffect, useState } from 'react';
 import { OrderList, OrderListChangeEvent } from 'primereact/orderlist';
 
 
@@ -46,6 +46,19 @@ export default function Test() {
     });
   }
 
+  const handleManualReorder = (dragon: Dragon) => {
+    const newList = dragons.filter((dr) => {
+      return dr.id !== dragon.id;
+    })
+    newList.unshift(dragon);
+    console.warn(newList);
+    //@ts-ignore
+    const event: OrderListChangeEvent = {
+      value: newList,
+    }
+    onOrderChange(event);
+  }
+
   const itemTemplate = (dragon:Dragon) => {
     if (dragons[0] === dragon) {
       return (
@@ -63,7 +76,9 @@ export default function Test() {
 
 
     return (
-      <div style={{width: '40vw', display: 'inline-flex', justifyContent: 'space-between', paddingRight: '5vw'}}>
+      <div onDoubleClick={() => {
+        handleManualReorder(dragon);
+      }} style={{width: '40vw', display: 'inline-flex', justifyContent: 'space-between', paddingRight: '5vw'}}>
       <img src={'https://dragcave.net/image/'+ dragon.id +'.gif'}/>
       <div style={{alignContent: 'center'}}>
         <div>{dragon.name}</div>

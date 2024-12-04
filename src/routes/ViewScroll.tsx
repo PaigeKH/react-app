@@ -38,7 +38,7 @@ export default function ViewScroll() {
     }).then((response) => {
         //@ts-ignore
         setDragons(Object.values(response.data.dragons));
-        setFilteredDragons(dragons);
+        setFilteredDragons(Object.values(response.data.dragons));
         setDataIsLoaded(true);
 
         if (!pages.includes(response.data.data.endCursor)) {
@@ -136,8 +136,6 @@ const updateFilter = (event: React.FormEvent<HTMLInputElement>) => {
       </div>
     )
   }
-
-  console.warn(filteredDragons);
 
   return (
     <div style={{maxHeight: '80vh', marginTop: '5vh'}}>
