@@ -22,9 +22,19 @@ return (
     isAuthenticated && user ?   
     <Menubar style={{minWidth: '100vw', position: 'fixed', top: 0, left: 0}} model={[
         {label: 'Home', command:onPress, id:''},
-        {label: 'Battle', command:onPress, id:'battle'},
         {label: 'Scroll', command:onPress, id:'scroll'},
         {label: 'Party', command:onPress, id:'party'},
+        {label: 'Battle', id:'battleSelect', items: [
+            {
+                label: 'Async',
+                id: 'battle',
+                command:onPress,
+            },
+            {
+                label: 'Sync',
+                id: 'battleSync',
+            }
+    ]},
         {label: 'Logout', command:onPressLogout, id:'logout'}
     ]}
     end={

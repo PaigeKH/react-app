@@ -57,7 +57,7 @@ export const handler: Handler = async (event, context) => {
      .eq('id', winner?.id)
     .select()
 
-    const { wadas, sfasf } = await supabase
+    const { data_loser, error_loser } = await supabase
     .from('dragons')
     .update({ losses: loser.losses + 1 })
     .eq('id', loser.id)
@@ -70,6 +70,7 @@ export const handler: Handler = async (event, context) => {
   const sessionId = event?.queryStringParameters?.sessionId;
   const userId = event?.queryStringParameters?.userId;
   const opponentName = event?.queryStringParameters?.opponentName;
+  const battleType = event?.queryStringParameters?.battleType;
 
   let { data: access_tokens, error } = await supabase
   .from('access_tokens')
@@ -135,32 +136,50 @@ export const handler: Handler = async (event, context) => {
   const dragon1Breed = curr_dragon[0].breed;
   const dragon2Breed = opp_dragon[0].breed;
 
+  const { data: d1_stats, d1_stats_error } = await supabase
+  .from('stats')
+  .select('*')
+   .eq('breed', dragon1Breed)
+
+   const { data: d2_stats, d2_stats_error } = await supabase
+   .from('stats')
+   .select('*')
+   .eq('breed', dragon2Breed)
+
+   if (!dragon1Breed || !dragon2Breed || d1_stats_error || d2_stats_error) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        message: 'Missing dragon breed data.',
+      }),
+    }
+  }
+
   return axios(config).then(async response => {
     const dragon1 = response.data.dragons[id1];
     dragon1.breed = dragon1Breed;
-    dragon1.stats = stats[dragon1.breed];
-    dragon1.maxHP = dragon1.stats.hp * 15;
-    dragon1.hp = dragon1.stats.hp * 15;
-    dragon1.maxMP = dragon1.stats.mp * 10;
-    dragon1.mp = dragon1.stats.mp * 10;
-    dragon1.maxStamina = dragon1.stats.stamina * 10;
-    dragon1.stamina = dragon1.stats.stamina * 10;
+    dragon1.stats = d1_stats[0];
+    dragon1.maxHP = dragon1.stats.hp * 5;
+    dragon1.hp = dragon1.stats.hp * 5;
+    dragon1.maxMP = dragon1.stats.mp * 5;
+    dragon1.mp = dragon1.stats.mp * 5;
+    dragon1.maxStamina = dragon1.stats.stamina * 5;
+    dragon1.stamina = dragon1.stats.stamina * 5;
     dragon1.agility = dragon1.stats.agility;
     dragon1.speed = dragon1.stats.speed;
     dragon1.spirit = dragon1.stats.spirit;
     dragon1.wins = curr_dragon[0].wins;
     dragon1.losses = curr_dragon[0].losses;
 
-
     const dragon2 = response.data.dragons[id2];
     dragon2.breed = dragon2Breed;
-    dragon2.stats = stats[dragon2.breed];
-    dragon2.maxHP = dragon2.stats.hp * 15;
-    dragon2.hp = dragon2.stats.hp * 15;
-    dragon2.maxMP = dragon2.stats.mp * 10;
-    dragon2.mp = dragon2.stats.mp * 10;
-    dragon2.maxStamina = dragon2.stats.stamina * 10;
-    dragon2.stamina = dragon2.stats.stamina * 10;
+    dragon2.stats = d2_stats[0];
+    dragon2.maxHP = dragon2.stats.hp * 5;
+    dragon2.hp = dragon2.stats.hp * 5;
+    dragon2.maxMP = dragon2.stats.mp * 5;
+    dragon2.mp = dragon2.stats.mp * 5;
+    dragon2.maxStamina = dragon2.stats.stamina * 5;
+    dragon2.stamina = dragon2.stats.stamina * 5;
     dragon2.agility = dragon2.stats.agility;
     dragon2.speed = dragon2.stats.speed;
     dragon2.spirit = dragon2.stats.spirit;

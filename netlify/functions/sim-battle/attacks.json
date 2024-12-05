@@ -90,7 +90,7 @@
         "description": "A very strong magical spell that causes a terrible mist to fall upon the arena."
     },
     "NoxiousCharge": {
-        "name": "Noxious Chare",
+        "name": "Noxious Charge",
         "damage": 150,
         "type": "Neutral",
         "source": "Physical",
