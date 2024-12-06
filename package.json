@@ -2,7 +2,6 @@
   "name": "react-app",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://shrimp-jam.com",
   "engines": {
     "node": ">=18.14.0"
   },
