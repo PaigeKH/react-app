@@ -35,6 +35,7 @@ return (
                 id: 'battleSync',
             }
     ]},
+        {label: 'Leaderboard', command:onPress, id:'leaderboard'},
         {label: 'Logout', command:onPressLogout, id:'logout'}
     ]}
     end={
@@ -45,6 +46,7 @@ return (
     <Menubar style={{minWidth: '100vw', position: 'fixed', top: 0, left: 0}} model={[
         {label: 'Home', command:onPress, id:''},
         {label: 'Login', command:onPressLogin, id:'login'},
+        {label: 'Leaderboard', command:onPress, id:'leaderboard'},
     ]}/>
 );
 };

@@ -12,6 +12,7 @@ import BattleDragons from './routes/BattleDragons';
 import ViewScroll from './routes/ViewScroll';
 import ChooseBattle from './routes/ChooseBattle';
 import Test from './routes/Test';
+import Leaderboard from './routes/Leaderboard';
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,11 @@ const router = createBrowserRouter([
   {
     path: '/party',
     element: <Test/>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/leaderboard',
+    element: <Leaderboard/>,
     errorElement: <ErrorPage />,
   },
 ]);

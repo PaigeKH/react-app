@@ -8,6 +8,7 @@ export const handler: Handler = async (event, context) => {
   const dragonID = event.queryStringParameters?.dragonID;
   const cursor = event.queryStringParameters?.cursor;
   const username = event.queryStringParameters?.username;
+  const remove = event.queryStringParameters?.remove;
 
   const url = cursor !== '' ? 'https://dragcave.net/api/v2/user?username=' + username + '&filter=ADULTS_AND_FROZEN&after=' + cursor : 'https://dragcave.net/api/v2/user?username=' + username + '&filter=ADULTS_AND_FROZEN&limit=100000';
 
@@ -44,11 +45,37 @@ export const handler: Handler = async (event, context) => {
 
   return axios(config).then(async response => {
     if (response.data.dragons[dragonID] || response.data.dragons['\'' + dragonID + '\'']) {
-      const { data, dragon_error } = await supabase
-      .from('dragons')
-      .upsert({ id: dragonID, owner: username, owner_id: userID })
-      .select()
+      if (remove) {
 
+        const { dragon_error } = await supabase
+        .from('dragons')
+        .delete()
+        .eq('id', dragonID)
+                
+
+      if (!dragon_error) {
+        return {
+          statusCode: 200,
+          body: JSON.stringify({
+            id: dragonID,
+            message: dragonID,
+          }),
+        }
+      } else {
+        console.warn('Dragon error')
+        return {
+          statusCode: 400,
+          body: JSON.stringify({
+            message: dragon_error,
+          }),
+        }
+      }
+      } else {
+        const { data, dragon_error } = await supabase
+        .from('dragons')
+        .upsert({ id: dragonID, owner: username, owner_id: userID })
+        .select()
+        
       if (data) {
         return {
           statusCode: 200,
@@ -66,7 +93,7 @@ export const handler: Handler = async (event, context) => {
           }),
         }
       }
-
+      }
 
     } else {
       console.warn('missing dragon')

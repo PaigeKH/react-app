@@ -34,4 +34,5 @@ export interface Dragon {
     breed?: string,
     attacks?: string[],
     registered?: boolean,
+    submitted?: boolean,
   }

@@ -51,6 +51,7 @@ export const handler: Handler = async (event, context) => {
       winner = d2;
     }
   
+    // update dragon win/lose data
     const { data_winner, error_winner } = await supabase
     .from('dragons')
     .update({ wins: winner.wins + 1})
@@ -62,6 +63,30 @@ export const handler: Handler = async (event, context) => {
     .update({ losses: loser.losses + 1 })
     .eq('id', loser.id)
     .select()
+
+    //update user win data
+    const { data: data_user_winner, error_user_winner } = await supabase
+    .from('users')
+    .select('wins')
+    .eq('user_id', winner.owner_id)
+
+    const { data_winner_update, data_winner_error } = await supabase
+    .from('users')
+    .update({ wins: data_user_winner[0].wins + 1 })
+    .eq('user_id', winner.owner_id)
+    .select()    
+
+    //update user loss data
+    const { data: data_user_loser, error_user_loser } = await supabase
+    .from('users')
+    .select('losses')
+    .eq('user_id', loser.owner_id)
+
+    const { data_loser_update, data_loser_error } = await supabase
+    .from('users')
+    .update({ losses: data_user_loser[0].losses + 1 })
+    .eq('user_id', loser.owner_id)
+    .select()   
   }
 
   const { createClient } = require('@supabase/supabase-js');
@@ -170,6 +195,7 @@ export const handler: Handler = async (event, context) => {
     dragon1.spirit = dragon1.stats.spirit;
     dragon1.wins = curr_dragon[0].wins;
     dragon1.losses = curr_dragon[0].losses;
+    dragon1.owner_id = curr_dragon[0].owner_id
 
     const dragon2 = response.data.dragons[id2];
     dragon2.breed = dragon2Breed;
@@ -185,6 +211,7 @@ export const handler: Handler = async (event, context) => {
     dragon2.spirit = dragon2.stats.spirit;
     dragon2.wins = opp_dragon[0].wins;
     dragon2.losses = opp_dragon[0].losses;
+    dragon2.owner_id = opp_dragon[0].owner_id
 
   
     let battleLog: string[] = [];

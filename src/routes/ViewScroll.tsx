@@ -64,7 +64,7 @@ export default function ViewScroll() {
     }
   }
 
-  const submitDragon = () => {
+  const submitDragon = (event: any) => {
     axios.get('/.netlify/functions/submit-dragon-to-db', {    
       params: {
         sessionID: user?.nickname,
@@ -72,10 +72,12 @@ export default function ViewScroll() {
         cursor: pages[currentPage - 1],
         dragonID: selectedDragon?.id,
         userID: user?.sub?.split("|")[2],
+        remove: selectedDragon?.registered,
       }
     }).then((response) => {
-      showToast(false, 'Submitted ' + (response.data.name ?? response.data.message[0].id) + ' successfully.');
+      showToast(false, 'Submitted/removed ' + (response.data.name ?? response.data.message[0].id) + ' successfully.');
     }).catch((error) => {
+      console.warn(error);
       showToast(true, 'Error submitting dragon' + error)
     })
   };
@@ -159,7 +161,7 @@ const updateFilter = (event: React.FormEvent<HTMLInputElement>) => {
 
         <div style={{backgroundColor: 'var(--primary-700)', marginLeft: '2vw'}}>
         <a><img src={"https://dragcave.net/image/" + selectedDragon?.id} alt={'Sprite for dragon ' + (selectedDragon?.name ?? selectedDragon?.id)}/></a>
-        <Button label='Submit' onClick={submitDragon}></Button>
+        <Button label={(!selectedDragon?.registered && selectedDragon?.submitted) ? 'Remove' : 'Submit'} onClick={submitDragon}></Button>
         <div style={{display: 'flex', width: '50vw', justifyContent: 'space-around', fontSize: '2vmin'}}>
           <div>
           <p>General Stats</p>

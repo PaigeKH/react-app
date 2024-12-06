@@ -77,6 +77,9 @@ export const handler: Handler = async (event, context) => {
         dragonResponse.speed += getStatModifier(dragonResponse.speed); 
         dragonResponse.strength += getStatModifier(dragonResponse.strength); 
         dragonResponse.defense += getStatModifier(dragonResponse.defense); 
+      } else if (response.data.dragons[dragon.id]) {      
+        const dragonResponse = response.data.dragons[dragon.id];  
+        dragonResponse.submitted = true;
       }
     })
 
