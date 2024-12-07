@@ -9,15 +9,15 @@
         "accuracy": 100,
         "description": "The user cloaks themself in shadows and pounces on the opponent."
     },
-    "VenomousBite": {
-        "name": "Venomous Bite",
-        "damage": 80,
-        "type": "Death",
+    "BirdFlock": {
+        "name": "Bird Flock",
+        "damage": 120,
+        "type": "Neutral",
         "source": "Physical",
-        "mp": 0,
-        "stamina": 100,
+        "mp": 150,
+        "stamina": 0,
         "accuracy": 100,
-        "description": "A bite with venomous fangs."
+        "description": "The user summons an allied flock of birds to attack the opponent"
     },
     "Claw": {
         "name": "Claw",
@@ -134,6 +134,16 @@
         "accuracy": 90,
         "description": "A breath attack full of malicious power."
     },
+    "SilkShot": {
+        "name": "Silk Shot",
+        "damage": 80,
+        "type": "Neutral",
+        "source": "Magical",
+        "mp": 30,
+        "stamina": 20,
+        "accuracy": 90,
+        "description": "The user attacks with a glob of silk."
+    },
     "SilverFang": {
         "name": "Silver Fang",
         "damage": 60,
@@ -154,7 +164,6 @@
         "selfDamage": true,
         "accuracy": 80,
         "description": "A full-body slam from the sky, slightly injuring the user."
-        
     },
     "SongOfTheDead": {
         "name": "Song of the Dead",
@@ -239,6 +248,16 @@
         "stamina": 0,
         "accuracy": 80,
         "description": "The user fires off a burst of life energy."
+    },
+    "VenomousBite": {
+        "name": "Venomous Bite",
+        "damage": 80,
+        "type": "Death",
+        "source": "Physical",
+        "mp": 0,
+        "stamina": 100,
+        "accuracy": 100,
+        "description": "A bite with venomous fangs."
     },
     "VoidTear": {
         "name": "Void Tear",

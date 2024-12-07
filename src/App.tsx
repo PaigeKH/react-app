@@ -3,7 +3,7 @@ import './App.css';
 import { PrimeReactProvider } from 'primereact/api';
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import {
-  createBrowserRouter,
+  createHashRouter,
   RouterProvider,
 } from "react-router-dom";
 import Home from './routes/Home';
@@ -14,7 +14,7 @@ import ChooseBattle from './routes/ChooseBattle';
 import Test from './routes/Test';
 import Leaderboard from './routes/Leaderboard';
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     element: <Home/>,
